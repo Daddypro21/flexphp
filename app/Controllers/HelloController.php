@@ -6,9 +6,11 @@ namespace App\Controllers;
 
 use FlexPHP\Http\Request;
 use FlexPHP\Http\Response;
+use FlexPHP\Routing\Attributes\Get;
 
 class HelloController extends BaseController
 {
+    #[Get('/hello', name: 'hello')]
     public function index(Request $request): Response
     {
         return $this->view('hello', ['name' => 'Monde']);

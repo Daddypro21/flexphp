@@ -19,4 +19,3 @@ use FlexPHP\Http\Router;
 /** @var Router $router */
 
 
-$router->get('/hello', 'App\Controllers\HelloController@index', 'hello');
