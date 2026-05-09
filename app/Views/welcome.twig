@@ -1,0 +1,143 @@
+{% extends 'layouts/main.twig' %}
+
+{% block title %}Bienvenue — FlexPHP{% endblock %}
+{% block meta_description %}FlexPHP — un framework PHP léger, async-first.{% endblock %}
+
+{% block content %}
+
+{# ── Hero ──────────────────────────────────────────────────────────────── #}
+<section style="
+    background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 60%, #e94560 100%);
+    color: #ffffff;
+    padding: 5rem 2rem;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 3rem;
+">
+    <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 1rem; letter-spacing: -.02em;">
+        Welcome to <span style="color: #e94560;">FlexPHP</span>
+    </h1>
+    <p style="font-size: 1.25rem; max-width: 600px; margin: 0 auto 2rem; opacity: .85;">
+        A lightweight, async-first PHP framework built for speed, simplicity,
+        and modern development workflows.
+    </p>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="/docs" class="btn btn-primary" style="font-size:1rem;padding:.7rem 1.75rem;">
+            Get Started
+        </a>
+        <a href="https://github.com/flexphp/flexphp"
+           class="btn btn-outline"
+           style="font-size:1rem;padding:.7rem 1.75rem;border-color:#fff;color:#fff;"
+           target="_blank" rel="noopener">
+            View on GitHub
+        </a>
+    </div>
+</section>
+
+{# ── Feature cards ─────────────────────────────────────────────────────── #}
+<section style="margin-bottom: 3rem;">
+    <h2 style="font-size:1.6rem;margin-bottom:1.5rem;color:#0f3460;">Framework Highlights</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.25rem;">
+
+        <div style="background:#fff;border-radius:8px;padding:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.08);">
+            <h3 style="color:#e94560;margin-bottom:.5rem;">Async-First</h3>
+            <p style="font-size:.9rem;color:#555;">
+                Mises à jour déclaratives via <code style="background:#f0f0f0;padding:0 .3rem;border-radius:3px;">flex-async</code>.
+                Aucun JS supplémentaire requis.
+            </p>
+        </div>
+
+        <div style="background:#fff;border-radius:8px;padding:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.08);">
+            <h3 style="color:#e94560;margin-bottom:.5rem;">Twig Templates</h3>
+            <p style="font-size:.9rem;color:#555;">
+                Moteur de templates Twig — héritage de layouts, blocs, filtres et fonctions personnalisées.
+            </p>
+        </div>
+
+        <div style="background:#fff;border-radius:8px;padding:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.08);">
+            <h3 style="color:#e94560;margin-bottom:.5rem;">Routage expressif</h3>
+            <p style="font-size:.9rem;color:#555;">
+                Paramètres, groupes, middleware par route et génération d'URL nommées.
+            </p>
+        </div>
+
+        <div style="background:#fff;border-radius:8px;padding:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.08);">
+            <h3 style="color:#e94560;margin-bottom:.5rem;">Cycle ORM</h3>
+            <p style="font-size:.9rem;color:#555;">
+                Entités annotées PHP 8, migrations et repository générique inclus.
+            </p>
+        </div>
+
+        <div style="background:#fff;border-radius:8px;padding:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.08);">
+            <h3 style="color:#e94560;margin-bottom:.5rem;">PSR Compliant</h3>
+            <p style="font-size:.9rem;color:#555;">
+                PSR-3 (Log), PSR-7/15 (HTTP), PSR-11 (Container), PSR-14 (Events).
+            </p>
+        </div>
+
+        <div style="background:#fff;border-radius:8px;padding:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.08);">
+            <h3 style="color:#e94560;margin-bottom:.5rem;">Version</h3>
+            <p style="font-size:.9rem;color:#555;">
+                FlexPHP <strong>v{{ version }}</strong><br>
+                PHP <strong>{{ constant('PHP_VERSION') }}</strong>
+            </p>
+        </div>
+
+    </div>
+</section>
+
+{# ── Async demo ────────────────────────────────────────────────────────── #}
+<section style="background:#fff;border-radius:8px;padding:2rem;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:3rem;">
+    <h2 style="font-size:1.4rem;margin-bottom:.75rem;color:#0f3460;">Live Async Demo</h2>
+    <p style="color:#555;margin-bottom:1.25rem;">
+        Cliquez sur le lien ci-dessous. FlexPHP charge uniquement le fragment serveur
+        — aucun rechargement de page. Vérifiez l'onglet Réseau de votre navigateur :
+        la requête porte l'en-tête <code style="background:#f0f0f0;padding:0 .3rem;border-radius:3px;">X-Flex-Async: true</code>.
+    </p>
+
+    <a href="/demo/partial"
+       class="btn btn-primary"
+       flex-async
+       flex-target="#demo-result"
+       flex-trigger="click"
+       flex-loading="#flex-global-loading"
+       flex-swap="innerHTML"
+       style="margin-bottom:1.25rem;">
+        Charger le fragment async
+    </a>
+
+    <div id="demo-result" style="
+        margin-top:1rem;padding:1.25rem;
+        border:2px dashed #dee2e6;border-radius:6px;
+        min-height:80px;color:#6c757d;font-style:italic;">
+        La réponse async apparaîtra ici…
+    </div>
+</section>
+
+{# ── Quick start ───────────────────────────────────────────────────────── #}
+<section style="margin-bottom:3rem;">
+    <h2 style="font-size:1.4rem;margin-bottom:1rem;color:#0f3460;">Quick Start</h2>
+    <pre style="background:#1a1a2e;color:#ccd6f6;padding:1.5rem;border-radius:8px;overflow-x:auto;font-size:.875rem;line-height:1.7;"><code>git clone &lt;repo&gt; mon-app
+cd mon-app &amp;&amp; composer install &amp;&amp; cp .env.example .env
+
+php flex serve              # http://localhost:8000
+php flex make:controller PostController --resource
+php flex migrate</code></pre>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var el = document.getElementById('demo-result');
+    if (!el) return;
+    el.addEventListener('flex:before', function () { el.style.borderColor = '#e94560'; el.style.opacity = '.6'; });
+    el.addEventListener('flex:after',  function () { el.style.borderColor = '#28a745'; el.style.opacity = '1'; });
+    el.addEventListener('flex:error',  function (e) {
+        el.innerHTML = '<strong style="color:#dc3545;">Erreur :</strong> ' + e.detail.error.message;
+        el.style.borderColor = '#dc3545'; el.style.opacity = '1';
+    });
+});
+</script>
+{% endblock %}

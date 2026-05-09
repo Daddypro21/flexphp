@@ -10,6 +10,7 @@ use FlexPHP\Http\Middleware\MiddlewareStack;
 use FlexPHP\Http\Request;
 use FlexPHP\Http\Response;
 use FlexPHP\Http\Router;
+use FlexPHP\Routing\RouteScanner;
 use Throwable;
 
 /**
@@ -104,6 +105,7 @@ class Application
     {
         try {
             $request = Request::fromGlobals();
+            $this->container->instance(Request::class, $request);
             $stack   = $this->buildMiddlewareStack();
 
             $response = $stack->handle(
@@ -306,19 +308,54 @@ class Application
     }
 
     /**
-     * Load the application's web routes file if it exists.
+     * Load routes from web.php and then scan controllers for route attributes.
+     *
+     * Route attributes are scanned after the file-based routes so that any
+     * explicit routes in web.php take precedence on name conflicts.
      */
     protected function loadRoutes(): void
     {
+        // 1. File-based routes (routes/web.php)
         $routesFile = $this->basePath . DIRECTORY_SEPARATOR . 'routes' . DIRECTORY_SEPARATOR . 'web.php';
 
-        if (!is_file($routesFile)) {
-            return;
+        if (is_file($routesFile)) {
+            $router = $this->router;
+            require $routesFile;
         }
 
-        $router = $this->router;
+        // 2. Attribute-based routes (scanned from controller directories)
+        $this->scanAttributeRoutes();
+    }
 
-        require $routesFile;
+    /**
+     * Scan controller directories for PHP 8 route attributes and register them.
+     *
+     * Configure scanned directories in config/app.php under 'route_scan_paths':
+     *   'route_scan_paths' => [
+     *       ['dir' => __DIR__ . '/../app/Controllers', 'namespace' => 'App\\Controllers'],
+     *   ]
+     */
+    protected function scanAttributeRoutes(): void
+    {
+        /** @var array<int, array{dir: string, namespace: string}> $paths */
+        $paths = (array) $this->config->get('app.route_scan_paths', []);
+
+        // Default: always scan app/Controllers
+        if (empty($paths)) {
+            $paths = [[
+                'dir'       => $this->basePath . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Controllers',
+                'namespace' => 'App\\Controllers',
+            ]];
+        }
+
+        foreach ($paths as $entry) {
+            $scanner = new RouteScanner(
+                $this->router,
+                [$entry['dir']],
+                rtrim($entry['namespace'], '\\'),
+            );
+            $scanner->scan();
+        }
     }
 
     // -------------------------------------------------------------------------

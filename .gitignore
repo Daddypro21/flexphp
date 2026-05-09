@@ -8,3 +8,4 @@
 *.DS_Store
 .phpunit.cache/
 composer.lock
+CLAUDE.md

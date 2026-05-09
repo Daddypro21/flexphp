@@ -1,0 +1,1066 @@
+{% extends 'layouts/main.twig' %}
+
+{% block title %}{% if currentPage %}{{ pageTitle }} — {% endif %}Documentation — FlexPHP{% endblock %}
+
+{% block head %}
+<style>
+.docs-wrapper { display:flex; gap:0; min-height:calc(100vh - 56px - 56px); margin:-2rem -1.25rem; }
+
+.docs-sidebar {
+    width:260px; flex-shrink:0; background:#1a1a2e;
+    padding:1.75rem 0; position:sticky; top:56px;
+    height:calc(100vh - 56px); overflow-y:auto;
+}
+.docs-sidebar h2 { color:#8892b0; font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:0 1.5rem .75rem; }
+.docs-sidebar a  { display:block; padding:.45rem 1.5rem; color:#ccd6f6; text-decoration:none; font-size:.9rem; border-left:3px solid transparent; transition:background .15s,border-color .15s,color .15s; }
+.docs-sidebar a:hover { background:rgba(233,69,96,.15); color:#e94560; border-left-color:#e94560; }
+.docs-sidebar a.active { background:rgba(233,69,96,.2); color:#e94560; border-left-color:#e94560; font-weight:600; }
+
+.docs-content { flex:1; padding:2.5rem 3rem; max-width:860px; min-width:0; }
+.docs-content h1 { font-size:2rem; color:#1a1a2e; margin-bottom:1rem; padding-bottom:.5rem; border-bottom:2px solid #e94560; }
+.docs-content h2 { font-size:1.45rem; color:#0f3460; margin:2.25rem 0 .75rem; }
+.docs-content h3 { font-size:1.1rem; color:#333; margin:1.5rem 0 .5rem; }
+.docs-content p  { margin-bottom:1rem; line-height:1.8; color:#444; }
+.docs-content ul,.docs-content ol { margin:0 0 1rem 1.5rem; line-height:1.8; color:#444; }
+.docs-content li { margin-bottom:.25rem; }
+.docs-content a  { color:#e94560; text-decoration:none; }
+.docs-content a:hover { text-decoration:underline; }
+
+.docs-content code { background:#f0f0f0; border-radius:3px; padding:.1rem .4rem; font-size:.875em; font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace; color:#c0392b; }
+.docs-content pre  { background:#1a1a2e; color:#ccd6f6; padding:1.5rem; border-radius:8px; overflow-x:auto; font-size:.875rem; line-height:1.7; margin:1rem 0 1.5rem; }
+.docs-content pre code { background:none; color:inherit; padding:0; font-size:inherit; }
+
+.callout { border-left:4px solid; padding:.9rem 1.25rem; border-radius:0 6px 6px 0; margin:1.25rem 0; font-size:.9rem; line-height:1.7; }
+.callout-info    { border-color:#0f3460; background:#eef2ff; color:#0f3460; }
+.callout-warning { border-color:#f39c12; background:#fffbea; color:#7d5000; }
+.callout-tip     { border-color:#27ae60; background:#edfaf3; color:#1a6b3c; }
+
+.docs-content table { width:100%; border-collapse:collapse; margin:1rem 0 1.5rem; font-size:.9rem; }
+.docs-content th    { background:#1a1a2e; color:#ccd6f6; padding:.6rem 1rem; text-align:left; font-weight:600; }
+.docs-content td    { border:1px solid #dee2e6; padding:.55rem 1rem; vertical-align:top; }
+.docs-content tr:nth-child(even) td { background:#f8f9fa; }
+
+.docs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; margin-top:1.5rem; }
+.docs-grid a { display:block; background:#fff; border:1px solid #dee2e6; border-radius:8px; padding:1.25rem; text-decoration:none; color:#1a1a2e; transition:border-color .15s,box-shadow .15s; }
+.docs-grid a:hover { border-color:#e94560; box-shadow:0 2px 8px rgba(233,69,96,.15); color:#e94560; }
+.docs-grid a span { display:block; font-size:.8rem; color:#888; margin-top:.25rem; }
+
+.docs-nav-bottom { display:flex; justify-content:space-between; margin-top:3rem; padding-top:1.5rem; border-top:1px solid #dee2e6; gap:1rem; }
+.docs-nav-bottom a { display:inline-flex; align-items:center; gap:.4rem; padding:.6rem 1.2rem; background:#1a1a2e; color:#ccd6f6; text-decoration:none; border-radius:6px; font-size:.875rem; font-weight:600; transition:background .15s; }
+.docs-nav-bottom a:hover { background:#e94560; color:#fff; }
+
+@media(max-width:768px) {
+    .docs-wrapper { flex-direction:column; margin:-2rem -1.25rem; }
+    .docs-sidebar { width:100%; height:auto; position:static; display:flex; flex-wrap:wrap; padding:1rem; gap:.25rem; }
+    .docs-sidebar h2 { width:100%; }
+    .docs-sidebar a { border-left:none; border-bottom:2px solid transparent; padding:.3rem .75rem; }
+    .docs-sidebar a.active { border-bottom-color:#e94560; border-left:none; }
+    .docs-content { padding:1.75rem 1.25rem; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+{% set pageKeys = pages|keys %}
+
+<div class="docs-wrapper">
+
+    {# ── Sidebar ── #}
+    <aside class="docs-sidebar">
+        <h2>Documentation</h2>
+        {% for slug, label in pages %}
+            <a href="/docs/{{ slug }}" class="{{ currentPage == slug ? 'active' : '' }}">{{ label }}</a>
+        {% endfor %}
+    </aside>
+
+    {# ── Content ── #}
+    <div class="docs-content">
+
+        {# ================================================================ #}
+        {# HOME                                                              #}
+        {# ================================================================ #}
+        {% if currentPage is null %}
+
+        <h1>Documentation FlexPHP</h1>
+        <p>Bienvenue dans la documentation officielle de <strong>FlexPHP</strong>. Choisissez un sujet dans le menu ou commencez par la prise en main.</p>
+
+        <div class="callout callout-tip">
+            <strong>Nouveau ici ?</strong> Commencez par <a href="/docs/getting-started">Prise en main</a> pour installer le framework et créer votre première page en moins de 5 minutes.
+        </div>
+
+        <h2>Parcourir la documentation</h2>
+        <div class="docs-grid">
+            {% for slug, label in pages %}
+                <a href="/docs/{{ slug }}">{{ label }}<span>→</span></a>
+            {% endfor %}
+        </div>
+
+        <h2>À propos</h2>
+        <table>
+            <tr><th>Composant</th><th>Détail</th></tr>
+            <tr><td>Version</td><td>1.0.0</td></tr>
+            <tr><td>PHP requis</td><td>8.1+</td></tr>
+            <tr><td>Licence</td><td>MIT</td></tr>
+            <tr><td>Templating</td><td>Twig 3.x</td></tr>
+            <tr><td>ORM</td><td>Cycle ORM 2.x</td></tr>
+            <tr><td>Routeur</td><td>nikic/fast-route</td></tr>
+            <tr><td>PSR</td><td>3, 4, 7, 11, 12, 14, 15</td></tr>
+        </table>
+
+        {# ================================================================ #}
+        {# GETTING STARTED                                                   #}
+        {# ================================================================ #}
+        {% elseif currentPage == 'getting-started' %}
+
+        <h1>Prise en main</h1>
+
+        <h2>Prérequis</h2>
+        <ul>
+            <li>PHP <strong>8.1</strong> ou supérieur</li>
+            <li>Extensions : <code>pdo</code>, <code>pdo_mysql</code> (ou sqlite/pgsql), <code>json</code>, <code>mbstring</code></li>
+            <li>Composer</li>
+        </ul>
+
+        <h2>Installation</h2>
+        <pre><code>git clone &lt;url-du-repo&gt; mon-projet
+cd mon-projet
+composer install
+cp .env.example .env</code></pre>
+        <p>Éditez <code>.env</code> avec vos paramètres (base de données, URL, etc.).</p>
+
+        <h2>Démarrer le serveur de développement</h2>
+        <pre><code>php flex serve
+# Serveur disponible sur http://localhost:8000</code></pre>
+
+        <h2>Structure du projet</h2>
+        <pre><code>mon-projet/
+├── app/
+│   ├── Controllers/      # Vos contrôleurs HTTP
+│   ├── Models/           # Entités Cycle ORM
+│   ├── Middleware/       # Middleware personnalisés
+│   ├── Providers/        # Service providers
+│   └── Views/            # Templates Twig (.twig)
+├── config/               # Fichiers de configuration
+├── database/
+│   ├── migrations/       # Fichiers de migration
+│   └── seeders/
+├── public/
+│   ├── index.php         # Point d'entrée HTTP
+│   └── js/flex.js        # Bibliothèque async
+├── routes/
+│   ├── web.php           # Routes web
+│   └── api.php           # Routes API
+├── src/                  # Cœur du framework
+├── storage/logs/         # Logs applicatifs
+├── .env                  # Variables d'environnement
+└── flex                  # CLI</code></pre>
+
+        <h2>Votre première page</h2>
+        <p><strong>1. Créez un contrôleur :</strong></p>
+        <pre><code>php flex make:controller HelloController</code></pre>
+
+        <p><strong>2. Éditez <code>app/Controllers/HelloController.php</code> :</strong></p>
+        <pre><code>&lt;?php
+declare(strict_types=1);
+namespace App\Controllers;
+
+use FlexPHP\Http\Request;
+use FlexPHP\Http\Response;
+
+class HelloController extends BaseController
+{
+    public function index(Request $request): Response
+    {
+        return $this->view('hello', ['name' => 'Monde']);
+    }
+}</code></pre>
+
+        <p><strong>3. Créez la vue <code>app/Views/hello.twig</code> :</strong></p>
+        <pre><code>{% verbatim %}{% extends 'layouts/main.twig' %}
+
+{% block content %}
+    &lt;h1>Bonjour, {{ name }} !&lt;/h1>
+{% endblock %}{% endverbatim %}</code></pre>
+
+        <p><strong>4. Ajoutez la route dans <code>routes/web.php</code> :</strong></p>
+        <pre><code>$router->get('/hello', 'App\Controllers\HelloController@index', 'hello');</code></pre>
+
+        <p>Ouvrez <code>http://localhost:8000/hello</code> — votre page s'affiche.</p>
+
+        <div class="callout callout-info">
+            <strong>Twig en production :</strong> mettez <code>APP_DEBUG=false</code> dans <code>.env</code> pour activer la mise en cache des templates compilés dans <code>storage/cache/views/</code>.
+        </div>
+
+        {# ================================================================ #}
+        {# ROUTING                                                           #}
+        {# ================================================================ #}
+        {% elseif currentPage == 'routing' %}
+
+        <h1>Routage</h1>
+        <p>Les routes sont déclarées dans <code>routes/web.php</code>. La variable <code>$router</code> est disponible automatiquement.</p>
+
+        <h2>Méthodes disponibles</h2>
+        <pre><code>$router->get('/articles', [ArticleController::class, 'index']);
+$router->post('/articles', [ArticleController::class, 'store']);
+$router->put('/articles/{id}', [ArticleController::class, 'update']);
+$router->patch('/articles/{id}', [ArticleController::class, 'patch']);
+$router->delete('/articles/{id}', [ArticleController::class, 'destroy']);
+$router->any('/webhook', [WebhookController::class, 'handle']);</code></pre>
+
+        <h2>Closures</h2>
+        <pre><code>$router->get('/ping', function (Request $request): Response {
+    return Response::json(['status' => 'ok']);
+});</code></pre>
+
+        <h2>Paramètres d'URL</h2>
+        <pre><code>// Paramètre simple
+$router->get('/articles/{slug}', [ArticleController::class, 'show']);
+
+// Avec contrainte regex
+$router->get('/users/{id:\d+}', [UserController::class, 'show']);
+
+// Plusieurs paramètres
+$router->get('/blog/{year:\d{4}}/{slug}', [BlogController::class, 'show']);</code></pre>
+
+        <p>Les paramètres sont injectés en arguments après <code>Request</code> :</p>
+        <pre><code>public function show(Request $request, string $id): Response
+{
+    // $id = valeur capturée depuis l'URL
+}</code></pre>
+
+        <h2>Routes nommées & génération d'URL</h2>
+        <pre><code>// 3e argument = nom de la route
+$router->get('/users/{id:\d+}', [UserController::class, 'show'], 'users.show');
+
+// Depuis un contrôleur
+$url = $this->router->url('users.show', ['id' => 42]); // '/users/42'
+
+// Depuis un template Twig
+// {{ url('users.show', {id: 42}) }}</code></pre>
+
+        <h2>Groupes</h2>
+        <pre><code>$router->group('/admin', function (Router $r) {
+    $r->get('/dashboard', [AdminController::class, 'dashboard']);
+}, [AuthMiddleware::class]);
+
+// Imbriqués
+$router->group('/api', function (Router $r) {
+    $r->group('/v1', function (Router $r) {
+        $r->get('/articles', [ArticleController::class, 'index']);
+    });
+});</code></pre>
+
+        {# ================================================================ #}
+        {# CONTROLLERS                                                       #}
+        {# ================================================================ #}
+        {% elseif currentPage == 'controllers' %}
+
+        <h1>Contrôleurs</h1>
+
+        <h2>Créer un contrôleur</h2>
+        <pre><code>php flex make:controller ArticleController
+php flex make:controller ArticleController --resource</code></pre>
+
+        <h2>Structure de base</h2>
+        <pre><code>&lt;?php
+declare(strict_types=1);
+namespace App\Controllers;
+
+use FlexPHP\Http\Request;
+use FlexPHP\Http\Response;
+
+class ArticleController extends BaseController
+{
+    public function index(Request $request): Response
+    {
+        return $this->view('articles/index', ['articles' => []]);
+    }
+
+    public function show(Request $request, string $id): Response
+    {
+        return $this->view('articles/show', ['id' => $id]);
+    }
+
+    public function store(Request $request): Response
+    {
+        $titre = $request->getInput('titre');
+        return $this->redirect('/articles');
+    }
+}</code></pre>
+
+        <h2>Méthodes héritées de BaseController</h2>
+        <table>
+            <tr><th>Méthode</th><th>Description</th></tr>
+            <tr><td><code>$this->view($template, $data)</code></td><td>Rend un template Twig → Response HTML</td></tr>
+            <tr><td><code>$this->json($data, $status)</code></td><td>Retourne une Response JSON</td></tr>
+            <tr><td><code>$this->redirect($url, $status)</code></td><td>Retourne une Response de redirection</td></tr>
+            <tr><td><code>$this->abort($status, $message)</code></td><td>Retourne une Response d'erreur</td></tr>
+        </table>
+
+        <h2>Injection de dépendances</h2>
+        <pre><code>class ArticleController extends BaseController
+{
+    public function __construct(
+        private ArticleRepository $articles,
+        ViewEngine $view,
+        Request $request,
+    ) {
+        parent::__construct($view, $request);
+    }
+}</code></pre>
+
+        {# ================================================================ #}
+        {# REQUESTS                                                          #}
+        {# ================================================================ #}
+        {% elseif currentPage == 'requests' %}
+
+        <h1>Requêtes HTTP</h1>
+        <p>La classe <code>FlexPHP\Http\Request</code> encapsule la requête PSR-7 courante.</p>
+
+        <h2>Méthode & URI</h2>
+        <pre><code>$request->getMethod();   // 'GET', 'POST', 'PUT'…
+$request->isGet();
+$request->isPost();
+$request->getUri();      // URL complète
+$request->getPath();     // '/articles'</code></pre>
+
+        <h2>Paramètres GET</h2>
+        <pre><code>$request->getQuery('page');       // valeur ou null
+$request->getQuery('page', 1);    // avec défaut
+$request->getQuery();             // tableau complet</code></pre>
+
+        <h2>Corps POST / JSON</h2>
+        <pre><code>$request->getInput('titre');       // champ POST ou null
+$request->getInput('titre', '');  // avec défaut
+$request->getBody();              // tableau complet (POST ou JSON décodé)</code></pre>
+
+        <h2>En-têtes & fichiers</h2>
+        <pre><code>$request->getHeader('Authorization');
+$files = $request->getFiles();    // PSR-7 UploadedFile[]</code></pre>
+
+        <h2>Détection</h2>
+        <pre><code>$request->isJson();           // Content-Type: application/json
+$request->isAsyncRequest();   // X-Flex-Async: true</code></pre>
+
+        {# ================================================================ #}
+        {# RESPONSES                                                         #}
+        {# ================================================================ #}
+        {% elseif currentPage == 'responses' %}
+
+        <h1>Réponses HTTP</h1>
+
+        <h2>Factories statiques</h2>
+        <pre><code>return Response::html('&lt;h1>Bonjour&lt;/h1>');
+return Response::html('Erreur', 500);
+return Response::json(['clé' => 'valeur']);
+return Response::json(['error' => 'Non autorisé'], 401);
+return Response::redirect('/accueil');
+return Response::notFound();
+return Response::notFound('Page introuvable');</code></pre>
+
+        <h2>Réponse personnalisée</h2>
+        <pre><code>return new Response('Corps', 200, [
+    'Content-Type' => 'text/plain',
+    'X-Custom'     => 'valeur',
+]);</code></pre>
+
+        <h2>Méthodes fluides</h2>
+        <pre><code>return (new Response('', 201))
+    ->setHeader('Location', '/articles/42')
+    ->setStatus(201);</code></pre>
+
+        {# ================================================================ #}
+        {# VIEWS                                                             #}
+        {# ================================================================ #}
+        {% elseif currentPage == 'views' %}
+
+        <h1>Vues & Templates Twig</h1>
+
+        <p>FlexPHP utilise <strong>Twig 3.x</strong> comme moteur de templates. Les fichiers ont l'extension <code>.twig</code> et se trouvent dans <code>app/Views/</code>.</p>
+
+        <h2>Rendre une vue</h2>
+        <pre><code>// Dans un contrôleur
+return $this->view('articles/index', [
+    'articles' => $articlesList,
+    'titre'    => 'Mes articles',
+]);</code></pre>
+
+        <h2>Héritage de layouts</h2>
+        <pre><code>{# app/Views/articles/index.twig #}
+{% verbatim %}{% extends 'layouts/main.twig' %}
+
+{% block title %}Liste des articles{% endblock %}
+
+{% block content %}
+    &lt;h1>Articles&lt;/h1>
+    {% for article in articles %}
+        &lt;p>{{ article.titre }}&lt;/p>
+    {% else %}
+        &lt;p>Aucun article.&lt;/p>
+    {% endfor %}
+{% endblock %}{% endverbatim %}</code></pre>
+
+        <h2>Blocs dans le layout</h2>
+        <pre><code>{# app/Views/layouts/main.twig #}
+{% verbatim %}&lt;title>{% block title %}FlexPHP{% endblock %}&lt;/title>
+&lt;main>{% block content %}{% endblock %}&lt;/main>
+{% block scripts %}{% endblock %}{% endverbatim %}</code></pre>
+
+        <h2>Include / partiels</h2>
+        <pre><code>{% verbatim %}{% include 'components/alert.twig' with {type: 'success', message: 'Sauvegardé !'} %}{% endverbatim %}</code></pre>
+
+        <h2>Échapper les données</h2>
+        <p>Twig échappe automatiquement toutes les variables. Pour afficher du HTML brut :</p>
+        <pre><code>{% verbatim %}{{ variable }}          {# échappé automatiquement #}
+{{ variable|raw }}     {# HTML brut — à utiliser avec précaution #}
+{{ variable|e }}       {# explicitement échappé #}{% endverbatim %}</code></pre>
+
+        <h2>Fonctions globales FlexPHP</h2>
+        <table>
+            <tr><th>Fonction Twig</th><th>Description</th></tr>
+            <tr><td><code>{% verbatim %}{{ csrf_token() }}{% endverbatim %}</code></td><td>Token CSRF en string</td></tr>
+            <tr><td><code>{% verbatim %}{{ csrf_field()|raw }}{% endverbatim %}</code></td><td>Input hidden avec le token CSRF</td></tr>
+            <tr><td><code>{% verbatim %}{{ url('route.name', {id: 42}) }}{% endverbatim %}</code></td><td>Générer une URL nommée</td></tr>
+            <tr><td><code>{% verbatim %}{{ asset('css/app.css') }}{% endverbatim %}</code></td><td>Chemin vers un asset public</td></tr>
+        </table>
+
+        <h2>Formulaire avec CSRF</h2>
+        <pre><code>{% verbatim %}&lt;form method="POST" action="/articles">
+    {{ csrf_field()|raw }}
+    &lt;input type="text" name="titre">
+    &lt;button type="submit">Créer&lt;/button>
+&lt;/form>{% endverbatim %}</code></pre>
+
+        <h2>Filtres Twig utiles</h2>
+        <pre><code>{% verbatim %}{{ titre|upper }}
+{{ date|date('d/m/Y') }}
+{{ texte|truncate(100) }}
+{{ tableau|join(', ') }}
+{{ prix|number_format(2, ',', ' ') }}{% endverbatim %}</code></pre>
+
+        <h2>Ajouter une extension Twig</h2>
+        <pre><code>// Dans un Service Provider (boot())
+$engine = $this->app->make(\FlexPHP\View\ViewEngine::class);
+$engine->getTwig()->addExtension(new MonExtension());</code></pre>
+
+        {# ================================================================ #}
+        {# DATABASE                                                          #}
+        {# ================================================================ #}
+        {% elseif currentPage == 'database' %}
+
+        <h1>Base de données</h1>
+
+        <h2>Configuration (.env)</h2>
+        <pre><code>DB_DRIVER=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=ma_base
+DB_USERNAME=root
+DB_PASSWORD=secret</code></pre>
+        <p>Drivers supportés : <code>mysql</code>, <code>pgsql</code>, <code>sqlite</code>.</p>
+
+        <h2>Accéder au DBAL</h2>
+        <pre><code>use FlexPHP\Database\DatabaseManager;
+
+$db = $this->app->make(DatabaseManager::class);
+$dbal = $db->getDatabase(); // Cycle\Database\DatabaseInterface</code></pre>
+
+        <h2>Requêtes directes</h2>
+        <pre><code>$rows = $dbal->query('SELECT * FROM articles WHERE publie = ?', [true])->fetchAll();
+
+$dbal->execute('INSERT INTO articles (titre) VALUES (?)', ['Mon titre']);
+
+$dbal->transaction(function () use ($dbal) {
+    $dbal->execute('UPDATE comptes SET solde = solde - 100 WHERE id = 1');
+    $dbal->execute('UPDATE comptes SET solde = solde + 100 WHERE id = 2');
+});</code></pre>
+
+        {# ================================================================ #}
+        {# ORM                                                               #}
+        {# ================================================================ #}
+        {% elseif currentPage == 'orm' %}
+
+        <h1>ORM & Entités</h1>
+        <p>FlexPHP utilise <strong>Cycle ORM 2.x</strong> avec des annotations PHP 8.</p>
+
+        <h2>Générer une entité</h2>
+        <pre><code>php flex make:model Article</code></pre>
+
+        <h2>Structure d'une entité</h2>
+        <pre><code>&lt;?php
+namespace App\Models;
+use Cycle\Annotated\Annotation\Entity;
+use Cycle\Annotated\Annotation\Column;
+
+#[Entity(table: 'articles')]
+class Article
+{
+    #[Column(type: 'primary')]
+    public int $id;
+
+    #[Column(type: 'string', length: 255)]
+    public string $titre;
+
+    #[Column(type: 'text')]
+    public string $contenu;
+
+    #[Column(type: 'boolean', default: false)]
+    public bool $publie = false;
+
+    #[Column(type: 'datetime')]
+    public \DateTimeImmutable $createdAt;
+}</code></pre>
+
+        <h2>Repository CRUD</h2>
+        <pre><code>&lt;?php
+namespace App\Repositories;
+use App\Models\Article;
+use FlexPHP\Database\BaseRepository;
+
+class ArticleRepository extends BaseRepository
+{
+    protected string $entityClass = Article::class;
+}
+
+// Utilisation
+$article  = $repo->findById(1);
+$all      = $repo->findAll();
+$filtres  = $repo->findBy(['publie' => true]);
+$page     = $repo->paginate(2, 15);
+
+$a = new Article();
+$a->titre = 'Titre'; $a->contenu = '...';
+$a->createdAt = new \DateTimeImmutable();
+$repo->save($a);
+$repo->delete($a);</code></pre>
+
+        {# ================================================================ #}
+        {# MIGRATIONS                                                        #}
+        {# ================================================================ #}
+        {% elseif currentPage == 'migrations' %}
+
+        <h1>Migrations</h1>
+
+        <h2>Commandes</h2>
+        <pre><code>php flex make:migration create_articles_table
+php flex migrate
+php flex migrate --rollback
+php flex migrate --fresh</code></pre>
+
+        <h2>Structure d'une migration</h2>
+        <pre><code>&lt;?php
+use Cycle\Database\DatabaseInterface;
+
+return new class {
+    public function up(DatabaseInterface $db): void
+    {
+        $schema = $db->table('articles')->getSchema();
+        $schema->primary('id');
+        $schema->string('titre', 255);
+        $schema->text('contenu');
+        $schema->boolean('publie')->defaultValue(false);
+        $schema->datetime('created_at');
+        $schema->save();
+    }
+
+    public function down(DatabaseInterface $db): void
+    {
+        $db->table('articles')->getSchema()->declareDropped()->save();
+    }
+};</code></pre>
+
+        <h2>Méthodes de schéma</h2>
+        <table>
+            <tr><th>Méthode</th><th>Description</th></tr>
+            <tr><td><code>->primary('id')</code></td><td>Clé primaire auto-incrémentée</td></tr>
+            <tr><td><code>->string('col', 255)</code></td><td>VARCHAR</td></tr>
+            <tr><td><code>->text('col')</code></td><td>TEXT</td></tr>
+            <tr><td><code>->integer('col')</code></td><td>INTEGER</td></tr>
+            <tr><td><code>->boolean('col')</code></td><td>BOOLEAN</td></tr>
+            <tr><td><code>->datetime('col')</code></td><td>DATETIME</td></tr>
+            <tr><td><code>->nullable()</code></td><td>Autorise NULL</td></tr>
+            <tr><td><code>->defaultValue($v)</code></td><td>Valeur par défaut</td></tr>
+            <tr><td><code>->index(['col'])</code></td><td>Index</td></tr>
+            <tr><td><code>->unique(['col'])</code></td><td>Contrainte unique</td></tr>
+        </table>
+
+        {# ================================================================ #}
+        {# MIDDLEWARE                                                        #}
+        {# ================================================================ #}
+        {% elseif currentPage == 'middleware' %}
+
+        <h1>Middleware</h1>
+        <p>Un middleware intercepte la requête avant/après le contrôleur. FlexPHP utilise PSR-15.</p>
+
+        <h2>Créer un middleware</h2>
+        <pre><code>&lt;?php
+namespace App\Middleware;
+use FlexPHP\Http\Response;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+class AuthMiddleware implements MiddlewareInterface
+{
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
+        if (!isset($_SESSION['user_id'])) {
+            return Response::redirect('/login')->getPsrResponse();
+        }
+        return $handler->handle($request);
+    }
+}</code></pre>
+
+        <h2>Enregistrement global</h2>
+        <pre><code>// config/app.php
+'middleware' => [
+    FlexPHP\Http\Middleware\CsrfMiddleware::class,
+    App\Middleware\LogRequestMiddleware::class,
+],</code></pre>
+
+        <h2>Par groupe / par route</h2>
+        <pre><code>$router->group('/admin', function (Router $r) {
+    $r->get('/dashboard', [AdminController::class, 'dashboard']);
+}, [AuthMiddleware::class]);
+
+$router->get('/profil', [ProfileController::class, 'show'], 'profile', [AuthMiddleware::class]);</code></pre>
+
+        <h2>CSRF intégré</h2>
+        <pre><code>{# Dans un template Twig #}
+{% verbatim %}&lt;form method="POST" action="/articles">
+    {{ csrf_field()|raw }}
+    ...
+&lt;/form>{% endverbatim %}</code></pre>
+
+        {# ================================================================ #}
+        {# EVENTS                                                            #}
+        {# ================================================================ #}
+        {% elseif currentPage == 'events' %}
+
+        <h1>Événements</h1>
+        <p>FlexPHP implémente PSR-14. Un événement est une simple classe PHP.</p>
+
+        <h2>Créer un événement</h2>
+        <pre><code>&lt;?php
+namespace App\Events;
+use App\Models\Article;
+
+class ArticlePublié
+{
+    public function __construct(
+        public readonly Article $article,
+        public readonly \DateTimeImmutable $at = new \DateTimeImmutable(),
+    ) {}
+}</code></pre>
+
+        <h2>Écouteur & enregistrement</h2>
+        <pre><code>class NotifierAbonnés
+{
+    public function __invoke(ArticlePublié $event): void { /* ... */ }
+}
+
+// Dans un Service Provider (boot())
+$dispatcher = $this->app->make(\FlexPHP\Events\EventDispatcher::class);
+$dispatcher->addListener(ArticlePublié::class, new NotifierAbonnés());</code></pre>
+
+        <h2>Déclencher un événement</h2>
+        <pre><code>$this->events->dispatch(new ArticlePublié($article));</code></pre>
+
+        {# ================================================================ #}
+        {# LOGGING                                                           #}
+        {# ================================================================ #}
+        {% elseif currentPage == 'logging' %}
+
+        <h1>Logging</h1>
+        <p>Logger PSR-3 injectables via <code>Psr\Log\LoggerInterface</code>.</p>
+
+        <h2>Utilisation</h2>
+        <pre><code>use Psr\Log\LoggerInterface;
+
+class ArticleController extends BaseController
+{
+    public function __construct(
+        private LoggerInterface $logger,
+        ViewEngine $view, Request $request,
+    ) { parent::__construct($view, $request); }
+
+    public function store(Request $request): Response
+    {
+        try {
+            $this->logger->info('Article créé', ['id' => $article->id]);
+            return $this->redirect('/articles');
+        } catch (\Throwable $e) {
+            $this->logger->error('Échec', ['exception' => $e->getMessage()]);
+            return $this->abort(500, 'Erreur serveur');
+        }
+    }
+}</code></pre>
+
+        <h2>Niveaux</h2>
+        <table>
+            <tr><th>Méthode</th><th>Usage</th></tr>
+            <tr><td><code>debug()</code></td><td>Débogage détaillé</td></tr>
+            <tr><td><code>info()</code></td><td>Événements normaux</td></tr>
+            <tr><td><code>notice()</code></td><td>Événements significatifs</td></tr>
+            <tr><td><code>warning()</code></td><td>Comportement inattendu</td></tr>
+            <tr><td><code>error()</code></td><td>Fonctionnalité indisponible</td></tr>
+            <tr><td><code>critical()</code></td><td>Condition critique</td></tr>
+            <tr><td><code>alert()</code></td><td>Action immédiate requise</td></tr>
+            <tr><td><code>emergency()</code></td><td>Système inutilisable</td></tr>
+        </table>
+
+        {# ================================================================ #}
+        {# CONTAINER                                                         #}
+        {# ================================================================ #}
+        {% elseif currentPage == 'container' %}
+
+        <h1>Conteneur DI</h1>
+        <p>Conteneur PSR-11 avec auto-wiring complet via Reflection.</p>
+
+        <h2>Liaisons</h2>
+        <pre><code>$this->app->bind(MailerInterface::class, SmtpMailer::class);
+
+$this->app->bind(Gateway::class, function () {
+    return new StripeGateway($_ENV['STRIPE_KEY']);
+});</code></pre>
+
+        <h2>Singleton</h2>
+        <pre><code>$this->app->singleton(CacheInterface::class, RedisCache::class);</code></pre>
+
+        <h2>Auto-wiring</h2>
+        <pre><code>// Toutes les dépendances du constructeur sont résolues automatiquement
+class ArticleController extends BaseController
+{
+    public function __construct(
+        private ArticleRepository $articles, // auto-wiré
+        ViewEngine $view,                    // auto-wiré
+        Request $request,                    // injecté par le framework
+    ) { parent::__construct($view, $request); }
+}</code></pre>
+
+        <h2>Résolution manuelle</h2>
+        <pre><code>$service = $app->make(MyService::class);
+$service = $app->make(MyService::class, ['param' => 'valeur']);</code></pre>
+
+        {# ================================================================ #}
+        {# PROVIDERS                                                         #}
+        {# ================================================================ #}
+        {% elseif currentPage == 'providers' %}
+
+        <h1>Service Providers</h1>
+
+        <h2>Créer un provider</h2>
+        <pre><code>&lt;?php
+namespace App\Providers;
+use FlexPHP\Core\ServiceProvider;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this->app->bind(MailerInterface::class, SmtpMailer::class);
+    }
+
+    public function boot(): void
+    {
+        $dispatcher = $this->app->make(EventDispatcher::class);
+        $dispatcher->addListener(UserRegistered::class, new SendWelcomeEmail());
+    }
+}</code></pre>
+
+        <h2>Enregistrement dans config/app.php</h2>
+        <pre><code>'providers' => [
+    FlexPHP\View\ViewServiceProvider::class,
+    FlexPHP\Database\DatabaseServiceProvider::class,
+    FlexPHP\Events\EventServiceProvider::class,
+    FlexPHP\Log\LogServiceProvider::class,
+    App\Providers\AppServiceProvider::class,
+],</code></pre>
+
+        <h2>Ordre d'exécution</h2>
+        <ol>
+            <li><code>register()</code> sur tous les providers</li>
+            <li><code>boot()</code> sur tous les providers</li>
+        </ol>
+
+        {# ================================================================ #}
+        {# ASYNC                                                             #}
+        {# ================================================================ #}
+        {% elseif currentPage == 'async' %}
+
+        <h1>Système Async</h1>
+        <p>Mises à jour d'interface sans rechargement ni JavaScript personnalisé.</p>
+
+        <h2>Comment ça marche</h2>
+        <ol>
+            <li><code>flex.js</code> intercepte les clics/soumissions sur les éléments <code>flex-async</code></li>
+            <li>Envoie la requête avec l'en-tête <code>X-Flex-Async: true</code></li>
+            <li>Le serveur détecte cet en-tête et retourne uniquement le fragment HTML</li>
+            <li><code>flex.js</code> injecte le fragment dans le DOM</li>
+        </ol>
+
+        <h2>Côté serveur</h2>
+        <pre><code>use FlexPHP\Async\AsyncResponse;
+
+public function index(Request $request): Response
+{
+    $articles = $this->articles->findAll();
+    return AsyncResponse::render(
+        $request,
+        fullView:     'articles/index',
+        fragmentView: 'articles/_list',
+        data: ['articles' => $articles],
+    );
+}</code></pre>
+
+        <h2>Attributs HTML</h2>
+        <table>
+            <tr><th>Attribut</th><th>Description</th></tr>
+            <tr><td><code>flex-async</code></td><td>Active le mode async</td></tr>
+            <tr><td><code>flex-target="#id"</code></td><td>Cible d'injection dans le DOM</td></tr>
+            <tr><td><code>flex-swap="innerHTML"</code></td><td><code>innerHTML</code>, <code>outerHTML</code>, <code>append</code>, <code>prepend</code></td></tr>
+            <tr><td><code>flex-trigger="click"</code></td><td><code>click</code>, <code>submit</code>, <code>load</code>, <code>hover</code></td></tr>
+            <tr><td><code>flex-method="GET"</code></td><td>Méthode HTTP</td></tr>
+            <tr><td><code>flex-loading="#spinner"</code></td><td>Indicateur de chargement</td></tr>
+        </table>
+
+        <h2>Exemples</h2>
+        <pre><code>&lt;!-- Lien async -->
+&lt;a href="/articles" flex-async flex-target="#main" flex-trigger="click">Articles&lt;/a>
+
+&lt;!-- Formulaire sans rechargement -->
+&lt;form action="/messages" method="POST"
+      flex-async flex-target="#messages" flex-swap="append" flex-loading="#spinner">
+    {% verbatim %}{{ csrf_field()|raw }}{% endverbatim %}
+    &lt;input type="text" name="contenu">
+    &lt;button type="submit">Envoyer&lt;/button>
+&lt;/form>
+
+&lt;!-- Chargement automatique -->
+&lt;div flex-async flex-target="#stats" flex-trigger="load" href="/stats">&lt;/div></code></pre>
+
+        {# ================================================================ #}
+        {# CLI                                                               #}
+        {# ================================================================ #}
+        {% elseif currentPage == 'cli' %}
+
+        <h1>CLI — <code>php flex</code></h1>
+
+        <h2>Commandes intégrées</h2>
+        <table>
+            <tr><th>Commande</th><th>Description</th></tr>
+            <tr><td><code>php flex serve</code></td><td>Serveur de développement (port 8000)</td></tr>
+            <tr><td><code>php flex make:controller Nom</code></td><td>Générer un contrôleur</td></tr>
+            <tr><td><code>php flex make:controller Nom --resource</code></td><td>Contrôleur CRUD complet</td></tr>
+            <tr><td><code>php flex make:model Nom</code></td><td>Générer une entité Cycle ORM</td></tr>
+            <tr><td><code>php flex make:migration nom</code></td><td>Générer un fichier de migration</td></tr>
+            <tr><td><code>php flex migrate</code></td><td>Appliquer les migrations</td></tr>
+            <tr><td><code>php flex migrate --rollback</code></td><td>Annuler le dernier batch</td></tr>
+            <tr><td><code>php flex migrate --fresh</code></td><td>Réinitialiser et réappliquer</td></tr>
+            <tr><td><code>php flex route:list</code></td><td>Lister toutes les routes</td></tr>
+        </table>
+
+        <h2>Créer une commande</h2>
+        <pre><code>&lt;?php
+namespace App\Console\Commands;
+use FlexPHP\Console\BaseCommand;
+
+class EnvoyerNewsletterCommand extends BaseCommand
+{
+    public function getName(): string        { return 'newsletter:envoyer'; }
+    public function getDescription(): string { return 'Envoie la newsletter'; }
+
+    public function handle(): int
+    {
+        $limit = (int) $this->getOption('limit', 100);
+
+        $this->info("Envoi (limit: {$limit})");
+
+        try {
+            $this->success('Newsletter envoyée.');
+            return 0;
+        } catch (\Throwable $e) {
+            $this->error($e->getMessage());
+            return 1;
+        }
+    }
+}</code></pre>
+
+        <h2>Enregistrement dans config/commands.php</h2>
+        <pre><code>return [
+    // ... commandes intégrées ...
+    'newsletter:envoyer' => App\Console\Commands\EnvoyerNewsletterCommand::class,
+];</code></pre>
+
+        <pre><code>php flex newsletter:envoyer --limit=50</code></pre>
+
+        {# ================================================================ #}
+        {# ROUTING ATTRIBUTES                                               #}
+        {# ================================================================ #}
+        {% elseif currentPage == 'routing-attrs' %}
+
+        <h1>Annotations de routes</h1>
+
+        <p>
+            FlexPHP permet de déclarer les routes directement sur les méthodes des contrôleurs
+            via des <strong>attributs PHP 8</strong>. Le <code>RouteScanner</code> découvre
+            automatiquement toutes les routes annotées dans <code>app/Controllers/</code>.
+        </p>
+
+        <div class="callout callout-tip">
+            Les routes déclarées dans <code>routes/web.php</code> sont toujours chargées en premier.
+            Les annotations sont scannées ensuite — les deux approches coexistent librement.
+        </div>
+
+        <h2>Attributs disponibles</h2>
+        <table>
+            <tr><th>Attribut</th><th>Méthode HTTP</th><th>Cible</th></tr>
+            <tr><td><code>#[Get(...)]</code></td><td>GET, HEAD</td><td>Méthode</td></tr>
+            <tr><td><code>#[Post(...)]</code></td><td>POST</td><td>Méthode</td></tr>
+            <tr><td><code>#[Put(...)]</code></td><td>PUT</td><td>Méthode</td></tr>
+            <tr><td><code>#[Patch(...)]</code></td><td>PATCH</td><td>Méthode</td></tr>
+            <tr><td><code>#[Delete(...)]</code></td><td>DELETE</td><td>Méthode</td></tr>
+            <tr><td><code>#[Any(...)]</code></td><td>Toutes</td><td>Méthode</td></tr>
+            <tr><td><code>#[Route(...)]</code></td><td>Configurable</td><td>Méthode</td></tr>
+            <tr><td><code>#[Prefix(...)]</code></td><td>—</td><td>Classe</td></tr>
+            <tr><td><code>#[Middleware(...)]</code></td><td>—</td><td>Classe ou méthode</td></tr>
+        </table>
+
+        <h2>Exemple complet</h2>
+        <pre><code>&lt;?php
+declare(strict_types=1);
+namespace App\Controllers;
+
+use FlexPHP\Http\Request;
+use FlexPHP\Http\Response;
+use FlexPHP\Routing\Attributes\Delete;
+use FlexPHP\Routing\Attributes\Get;
+use FlexPHP\Routing\Attributes\Middleware;
+use FlexPHP\Routing\Attributes\Post;
+use FlexPHP\Routing\Attributes\Prefix;
+use FlexPHP\Routing\Attributes\Put;
+
+#[Prefix('/articles')]
+#[Middleware(App\Middleware\AuthMiddleware::class)]
+class ArticleController extends BaseController
+{
+    // GET /articles  (accessible sans auth car pas de #[Middleware] sur la méthode)
+    #[Get('/', name: 'articles.index')]
+    public function index(Request $request): Response
+    {
+        return $this->view('articles/index');
+    }
+
+    // GET /articles/{id:\d+}
+    #[Get('/{id:\d+}', name: 'articles.show')]
+    public function show(Request $request, string $id): Response
+    {
+        return $this->view('articles/show', ['id' => $id]);
+    }
+
+    // POST /articles
+    #[Post('/', name: 'articles.store')]
+    public function store(Request $request): Response
+    {
+        // ... créer l'article
+        return $this->redirect('/articles');
+    }
+
+    // PUT /articles/{id:\d+}
+    #[Put('/{id:\d+}', name: 'articles.update')]
+    public function update(Request $request, string $id): Response
+    {
+        return $this->redirect('/articles/' . $id);
+    }
+
+    // DELETE /articles/{id:\d+}
+    #[Delete('/{id:\d+}', name: 'articles.destroy')]
+    public function destroy(Request $request, string $id): Response
+    {
+        return $this->redirect('/articles');
+    }
+}</code></pre>
+
+        <h2>#[Route] — méthodes multiples sur une seule action</h2>
+        <pre><code>use FlexPHP\Routing\Attributes\Route;
+
+#[Route('/profil', methods: ['GET', 'HEAD'], name: 'profil.show')]
+#[Route('/profil', methods: ['POST'],        name: 'profil.update')]
+public function profil(Request $request): Response
+{
+    if ($request->isPost()) {
+        // traitement du formulaire
+    }
+    return $this->view('profil');
+}</code></pre>
+
+        <h2>#[Prefix] — préfixe de classe</h2>
+        <p>Appliqué à la classe, le préfixe est ajouté devant toutes les routes déclarées dans le contrôleur.</p>
+        <pre><code>#[Prefix('/admin')]
+class AdminController extends BaseController
+{
+    #[Get('/dashboard', name: 'admin.dashboard')]
+    public function dashboard(Request $request): Response { ... }
+    // → GET /admin/dashboard
+
+    #[Get('/users', name: 'admin.users')]
+    public function users(Request $request): Response { ... }
+    // → GET /admin/users
+}</code></pre>
+
+        <h2>#[Middleware] — sur la classe ou la méthode</h2>
+        <pre><code>// Sur la classe : s'applique à TOUTES les routes du contrôleur
+#[Prefix('/admin')]
+#[Middleware(AuthMiddleware::class, AdminMiddleware::class)]
+class AdminController extends BaseController { ... }
+
+// Sur une méthode : s'ajoute au middleware de classe
+#[Get('/secret', name: 'admin.secret')]
+#[Middleware(SuperAdminMiddleware::class)]
+public function secret(Request $request): Response { ... }
+// Middleware appliqués : AuthMiddleware, AdminMiddleware, SuperAdminMiddleware</code></pre>
+
+        <h2>Coexistence avec routes/web.php</h2>
+        <pre><code>// routes/web.php — les deux approches fonctionnent ensemble
+$router->get('/page-statique', fn($r) => Response::html('&lt;h1>Page&lt;/h1>'));
+
+// app/Controllers/ArticleController.php — route via attribut
+#[Get('/articles', name: 'articles.index')]
+public function index(Request $request): Response { ... }</code></pre>
+
+        <div class="callout callout-info">
+            <strong>Ordre de chargement :</strong> <code>routes/web.php</code> est chargé en premier,
+            puis le scanner parcourt <code>app/Controllers/</code>. En cas de conflit de nom de route,
+            la première déclaration gagne.
+        </div>
+
+        <h2>Scanner d'autres répertoires</h2>
+        <p>Par défaut, seul <code>app/Controllers/</code> est scanné. Pour ajouter des répertoires, configurez <code>config/app.php</code> :</p>
+        <pre><code>// config/app.php
+'route_scan_paths' => [
+    ['dir' => __DIR__ . '/../app/Controllers',  'namespace' => 'App\\Controllers'],
+    ['dir' => __DIR__ . '/../modules/Blog',     'namespace' => 'Modules\\Blog'],
+],</code></pre>
+
+        {% endif %}
+
+        {# ── Navigation bas de page ── #}
+        {% if prevKey is not null or nextKey is not null %}
+        <div class="docs-nav-bottom">
+            {% if prevKey is not null %}
+                <a href="/docs/{{ prevKey }}">← {{ prevLabel }}</a>
+            {% else %}
+                <span></span>
+            {% endif %}
+            {% if nextKey is not null %}
+                <a href="/docs/{{ nextKey }}">{{ nextLabel }} →</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    </div>{# /.docs-content #}
+</div>{# /.docs-wrapper #}
+{% endblock %}

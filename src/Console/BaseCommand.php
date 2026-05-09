@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FlexPHP\Console;
 
-use FlexPHP\Core\Application;
+use FlexPHP\Core\Application as CoreApp;
 
 /**
  * Abstract base class for all FlexPHP console commands.
@@ -34,7 +34,7 @@ abstract class BaseCommand
      * Reference to the framework application container.
      * Populated by configure() before handle() is called.
      */
-    protected ?Application $app = null;
+    protected ?CoreApp $app = null;
 
     // -------------------------------------------------------------------------
     // Abstract contract
@@ -73,7 +73,7 @@ abstract class BaseCommand
      * @param string[]    $argv The full argument vector (including script name and command).
      * @param Application|null $app  The framework application instance.
      */
-    public function configure(array $argv, ?Application $app = null): void
+    public function configure(array $argv, ?CoreApp $app = null): void
     {
         $this->argv = $argv;
         $this->app  = $app;

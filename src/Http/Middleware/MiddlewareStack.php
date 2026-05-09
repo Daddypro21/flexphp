@@ -116,15 +116,21 @@ class MiddlewareStack
      */
     protected function buildCoreHandler(callable $finalHandler): RequestHandlerInterface
     {
-        return new class ($finalHandler) implements RequestHandlerInterface {
-            public function __construct(private readonly mixed $handler)
-            {
-            }
+        return new class ($finalHandler, $this->container) implements RequestHandlerInterface {
+            public function __construct(
+                private readonly mixed $handler,
+                private readonly ?\FlexPHP\Core\Container $container,
+            ) {}
 
             public function handle(ServerRequestInterface $psrRequest): ResponseInterface
             {
                 // Re-wrap PSR-7 request in a FlexPHP Request for the final handler.
                 $flexRequest = new \FlexPHP\Http\Request($psrRequest);
+
+                // Keep the container's Request instance in sync so controllers
+                // that declare Request in their constructor get the current one.
+                $this->container?->instance(\FlexPHP\Http\Request::class, $flexRequest);
+
                 /** @var \FlexPHP\Http\Response $flexResponse */
                 $flexResponse = ($this->handler)($flexRequest);
                 return $flexResponse->getPsrResponse();

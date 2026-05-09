@@ -108,7 +108,7 @@ class Request
      *
      * @return mixed The parameter value, all params (array), or $default.
      */
-    public function getQuery(string $key = null, mixed $default = null): mixed
+    public function getQuery(?string $key = null, mixed $default = null): mixed
     {
         $params = $this->psrRequest->getQueryParams();
 

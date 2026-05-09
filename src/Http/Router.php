@@ -81,7 +81,7 @@ class Router
      * @param string|null              $name       Optional route name.
      * @param array<int, string>       $middleware Route-level middleware class names.
      */
-    public function get(string $pattern, callable|string $handler, string $name = null, array $middleware = []): void
+    public function get(string $pattern, callable|string $handler, ?string $name = null, array $middleware = []): void
     {
         $this->addRoute('GET', $pattern, $handler, $name, $middleware);
     }
@@ -94,7 +94,7 @@ class Router
      * @param string|null        $name       Optional route name.
      * @param array<int, string> $middleware Route-level middleware.
      */
-    public function post(string $pattern, callable|string $handler, string $name = null, array $middleware = []): void
+    public function post(string $pattern, callable|string $handler, ?string $name = null, array $middleware = []): void
     {
         $this->addRoute('POST', $pattern, $handler, $name, $middleware);
     }
@@ -107,7 +107,7 @@ class Router
      * @param string|null        $name       Optional route name.
      * @param array<int, string> $middleware Route-level middleware.
      */
-    public function put(string $pattern, callable|string $handler, string $name = null, array $middleware = []): void
+    public function put(string $pattern, callable|string $handler, ?string $name = null, array $middleware = []): void
     {
         $this->addRoute('PUT', $pattern, $handler, $name, $middleware);
     }
@@ -120,7 +120,7 @@ class Router
      * @param string|null        $name       Optional route name.
      * @param array<int, string> $middleware Route-level middleware.
      */
-    public function patch(string $pattern, callable|string $handler, string $name = null, array $middleware = []): void
+    public function patch(string $pattern, callable|string $handler, ?string $name = null, array $middleware = []): void
     {
         $this->addRoute('PATCH', $pattern, $handler, $name, $middleware);
     }
@@ -133,7 +133,7 @@ class Router
      * @param string|null        $name       Optional route name.
      * @param array<int, string> $middleware Route-level middleware.
      */
-    public function delete(string $pattern, callable|string $handler, string $name = null, array $middleware = []): void
+    public function delete(string $pattern, callable|string $handler, ?string $name = null, array $middleware = []): void
     {
         $this->addRoute('DELETE', $pattern, $handler, $name, $middleware);
     }
@@ -146,7 +146,7 @@ class Router
      * @param string|null        $name       Optional route name.
      * @param array<int, string> $middleware Route-level middleware.
      */
-    public function any(string $pattern, callable|string $handler, string $name = null, array $middleware = []): void
+    public function any(string $pattern, callable|string $handler, ?string $name = null, array $middleware = []): void
     {
         foreach (['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'] as $method) {
             $this->addRoute($method, $pattern, $handler, $name, $middleware);
@@ -292,7 +292,7 @@ class Router
      * @param string|null        $name       Optional route name.
      * @param array<int, string> $middleware Route-specific middleware.
      */
-    protected function addRoute(
+    public function addRoute(
         string $method,
         string $pattern,
         callable|string $handler,

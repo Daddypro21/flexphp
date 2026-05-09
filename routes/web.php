@@ -3,23 +3,20 @@
 declare(strict_types=1);
 
 /**
- * Web routes.
- * Define your application's HTTP routes here.
- * Routes are loaded by the Application bootstrap process.
+ * Web routes — file-based definitions.
+ *
+ * You can also declare routes directly on controller methods using PHP 8 attributes:
+ *
+ *   #[Get('/articles', name: 'articles.index')]
+ *   public function index(Request $request): Response { ... }
+ *
+ * The RouteScanner automatically discovers all attribute-based routes in app/Controllers/.
+ * Routes declared here take precedence over attribute routes on name conflicts.
  */
 
 use FlexPHP\Http\Router;
 
 /** @var Router $router */
 
-// Welcome page
-$router->get('/', 'App\Controllers\WelcomeController@index', 'home');
 
-// Example route group with prefix
-$router->group('/api', function (Router $router) {
-    $router->get('/users', 'App\Controllers\UserController@index', 'api.users.index');
-    $router->post('/users', 'App\Controllers\UserController@store', 'api.users.store');
-    $router->get('/users/{id}', 'App\Controllers\UserController@show', 'api.users.show');
-    $router->put('/users/{id}', 'App\Controllers\UserController@update', 'api.users.update');
-    $router->delete('/users/{id}', 'App\Controllers\UserController@destroy', 'api.users.destroy');
-});
+$router->get('/hello', 'App\Controllers\HelloController@index', 'hello');
