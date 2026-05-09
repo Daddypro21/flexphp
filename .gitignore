@@ -1,0 +1,10 @@
+/vendor/
+/node_modules/
+/.env
+/storage/logs/*.log
+/storage/cache/*
+!/storage/logs/.gitkeep
+!/storage/cache/.gitkeep
+*.DS_Store
+.phpunit.cache/
+composer.lock
